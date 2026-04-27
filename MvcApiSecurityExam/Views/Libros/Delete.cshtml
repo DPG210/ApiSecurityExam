@@ -1,0 +1,23 @@
+@model MvcApiSecurityExam.Models.Libros
+@{
+    ViewData["Title"] = "Eliminar libro";
+}
+
+<div class="card shadow-sm border-danger">
+    <div class="card-header bg-danger text-white">
+        <h4 class="mb-0">Eliminar libro</h4>
+    </div>
+    <div class="card-body">
+        <p>¿Seguro que quieres eliminar este libro?</p>
+        <dl class="row">
+            <dt class="col-sm-3">Id</dt><dd class="col-sm-9">@Model.IdLibro</dd>
+            <dt class="col-sm-3">Título</dt><dd class="col-sm-9">@Model.Titulo</dd>
+            <dt class="col-sm-3">Autor</dt><dd class="col-sm-9">@Model.Autor</dd>
+        </dl>
+        <form asp-action="DeleteConfirmed" asp-route-id="@Model.IdLibro" method="post">
+            @Html.AntiForgeryToken()
+            <button type="submit" class="btn btn-danger">Eliminar</button>
+            <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+</div>

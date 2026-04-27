@@ -1,0 +1,45 @@
+﻿@{
+    ViewData["Title"] = "Inicio";
+}
+
+<div class="row mb-4">
+    <div class="col-lg-8">
+        <div class="p-4 p-md-5 mb-4 text-white rounded bg-dark shadow-sm">
+            <div class="col-lg-8 px-0">
+                <h1 class="display-5 fw-bold">Catálogo de libros</h1>
+                <p class="lead my-3">MVC conectado a la API de libros, géneros, usuarios, pedidos y perfiles con JWT.</p>
+                <p class="mb-0">
+                    <a asp-controller="Libros" asp-action="Index" class="btn btn-warning fw-bold me-2">Ver libros</a>
+                    <a asp-controller="Auth" asp-action="Login" class="btn btn-outline-light">Iniciar sesión</a>
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card shadow-sm mb-3">
+            <div class="card-body text-center">
+                <div class="display-6 fw-bold">@ViewBag.TotalLibros</div>
+                <div class="text-muted">Libros</div>
+            </div>
+        </div>
+        <div class="card shadow-sm mb-3">
+            <div class="card-body text-center">
+                <div class="display-6 fw-bold">@ViewBag.TotalGeneros</div>
+                <div class="text-muted">Géneros</div>
+            </div>
+        </div>
+        <div class="card shadow-sm">
+            <div class="card-body text-center">
+                <div class="display-6 fw-bold">@ViewBag.TotalUsuarios</div>
+                <div class="text-muted">Usuarios</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-md-3"><div class="card h-100 shadow-sm"><div class="card-body"><h5>Libros</h5><p>CRUD completo y filtrado por género.</p><a class="btn btn-primary btn-sm" asp-controller="Libros" asp-action="Index">Abrir</a></div></div></div>
+    <div class="col-md-3"><div class="card h-100 shadow-sm"><div class="card-body"><h5>Géneros</h5><p>Listado y detalle de categorías.</p><a class="btn btn-primary btn-sm" asp-controller="Libros" asp-action="Generos">Abrir</a></div></div></div>
+    <div class="col-md-3"><div class="card h-100 shadow-sm"><div class="card-body"><h5>Usuarios</h5><p>Listado y alta de usuarios.</p><a class="btn btn-primary btn-sm" asp-controller="Libros" asp-action="Usuarios">Abrir</a></div></div></div>
+    <div class="col-md-3"><div class="card h-100 shadow-sm"><div class="card-body"><h5>Pedidos</h5><p>Crear pedidos seleccionando libros.</p><a class="btn btn-primary btn-sm" asp-controller="Libros" asp-action="CreatePedido">Abrir</a></div></div></div>
+</div>

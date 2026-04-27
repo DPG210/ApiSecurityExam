@@ -1,0 +1,32 @@
+@model List<MvcApiSecurityExam.Models.Generos>
+@{
+    ViewData["Title"] = "Géneros";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <h1 class="mb-0">Géneros</h1>
+        <p class="text-muted mb-0">Catálogo de categorías del sistema.</p>
+    </div>
+    <a asp-action="Index" class="btn btn-outline-secondary">Volver a libros</a>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-striped shadow-sm bg-white">
+        <thead class="table-dark">
+            <tr><th>Id</th><th>Nombre</th><th></th></tr>
+        </thead>
+        <tbody>
+        @foreach (var genero in Model)
+        {
+            <tr>
+                <td>@genero.IdGenero</td>
+                <td>@genero.Nombre</td>
+                <td class="text-end">
+                    <a asp-action="Genero" asp-route-idGenero="@genero.IdGenero" class="btn btn-sm btn-primary">Ver</a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>

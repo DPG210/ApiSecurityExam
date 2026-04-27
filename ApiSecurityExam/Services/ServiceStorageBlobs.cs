@@ -1,12 +1,13 @@
 ﻿using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
+using Azure.Storage.Sas;
 using MvcCoreAzureStorage.Models;
 
 namespace MvcCoreAzureStorage.Services
 {
     public class ServiceStorageBlobs
     {
-        private BlobServiceClient client;
+        private readonly BlobServiceClient client;
         public ServiceStorageBlobs(BlobServiceClient client)
         {
             this.client = client;
@@ -36,60 +37,18 @@ namespace MvcCoreAzureStorage.Services
         //LISTADO DE FICHEROS DENTRO DE UN CONTAINER
         public async Task<List<BlobModel>> GetBlobsAsync(string containerName)
         {
-            //NECESITAMOS UN CLIENTE DE BLOBS CONTAINER
-            //PARA EL ACCESO A LOS FICHEROS 
             BlobContainerClient containerClient =
                 this.client.GetBlobContainerClient(containerName);
             List<BlobModel> models = new List<BlobModel>();
             await foreach (BlobItem item in containerClient.GetBlobsAsync())
             {
-                BlobClient blobClient =
-                    containerClient.GetBlobClient(item.Name);
                 BlobModel blob = new BlobModel();
                 blob.Nombre = item.Name;
                 blob.Container = containerName;
-                blob.Url = blobClient.Uri.AbsoluteUri;
+                blob.Url = this.GetBlobUrl(containerName, item.Name);
                 models.Add(blob);
             }
             return models;
-
-            //BlobContainerClient containerClient =
-            //    this.client.GetBlobContainerClient(containerName);
-            //List<BlobModel> models = new List<BlobModel>();
-
-            //await foreach (BlobItem item in containerClient.GetBlobsAsync())
-            //{
-            //    BlobClient blobClient = containerClient.GetBlobClient(item.Name);
-            //    BlobModel blob = new BlobModel();
-            //    blob.Nombre = item.Name;
-            //    blob.Container = containerName;
-
-            //    // MAGIA AQUÍ: Generar el Token SAS si el cliente tiene permisos
-            //    if (blobClient.CanGenerateSasUri)
-            //    {
-            //        // Configuramos el token con permiso de solo lectura por 1 hora
-            //        BlobSasBuilder sasBuilder = new BlobSasBuilder()
-            //        {
-            //            BlobContainerName = containerName,
-            //            BlobName = item.Name,
-            //            Resource = "b", // 'b' indica que el permiso es para un Blob
-            //            StartsOn = DateTimeOffset.UtcNow,
-            //            ExpiresOn = DateTimeOffset.UtcNow.AddHours(1)
-            //        };
-            //        sasBuilder.SetPermissions(BlobSasPermissions.Read);
-
-            //        // Generamos la URL completa con el token de seguridad incluido
-            //        blob.Url = blobClient.GenerateSasUri(sasBuilder).AbsoluteUri;
-            //    }
-            //    else
-            //    {
-            //        // Si no hay permisos para generar SAS, devuelve la URL base
-            //        blob.Url = blobClient.Uri.AbsoluteUri;
-            //    }
-
-            //    models.Add(blob);
-            //}
-            //return models;
         }
 
         //ELIMINAR UN BLOB
@@ -113,10 +72,33 @@ namespace MvcCoreAzureStorage.Services
             BlobContainerClient containerClient = this.client.GetBlobContainerClient(containerName);
             BlobClient blobClient = containerClient.GetBlobClient(blobName);
 
-            // Descargamos la información y obtenemos el stream del fichero
-            BlobDownloadInfo response = await blobClient.DownloadAsync();
+            // Descargamos la información y obtenemos el stream del fichero
+            BlobDownloadInfo response = await blobClient.DownloadAsync();
             return response.Content;
         }
+
+        public string GetBlobUrl(string containerName, string blobName)
+        {
+            BlobContainerClient containerClient = this.client.GetBlobContainerClient(containerName);
+            BlobClient blobClient = containerClient.GetBlobClient(blobName);
+
+            if (blobClient.CanGenerateSasUri)
+            {
+                BlobSasBuilder sasBuilder = new BlobSasBuilder
+                {
+                    BlobContainerName = containerName,
+                    BlobName = blobName,
+                    Resource = "b",
+                    StartsOn = DateTimeOffset.UtcNow.AddMinutes(-5),
+                    ExpiresOn = DateTimeOffset.UtcNow.AddHours(1)
+                };
+                sasBuilder.SetPermissions(BlobSasPermissions.Read);
+                return blobClient.GenerateSasUri(sasBuilder).AbsoluteUri;
+            }
+
+            return blobClient.Uri.AbsoluteUri;
+        }
+
         public string GetContainerUrl(string containerName)
         {
             BlobContainerClient containerClient = this.client.GetBlobContainerClient(containerName);

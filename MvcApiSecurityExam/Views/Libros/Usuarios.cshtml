@@ -1,0 +1,34 @@
+@model List<MvcApiSecurityExam.Models.Usuarios>
+@{
+    ViewData["Title"] = "Usuarios";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <h1 class="mb-0">Usuarios</h1>
+        <p class="text-muted mb-0">Listado de usuarios de la aplicación.</p>
+    </div>
+    <a asp-action="CreateUsuario" class="btn btn-success">Nuevo usuario</a>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-striped shadow-sm bg-white align-middle">
+        <thead class="table-dark">
+            <tr>
+                <th>Id</th><th>Nombre</th><th>Apellidos</th><th>Email</th><th>Foto</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var usuario in Model)
+        {
+            <tr>
+                <td>@usuario.IdUsuario</td>
+                <td>@usuario.Nombre</td>
+                <td>@usuario.Apellido</td>
+                <td>@usuario.Email</td>
+                <td><img src="@usuario.Foto" alt="@usuario.Nombre" style="width:60px;height:60px;object-fit:cover" class="rounded-circle" /></td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>

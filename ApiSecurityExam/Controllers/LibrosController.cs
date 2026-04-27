@@ -1,6 +1,7 @@
 ﻿using ApiSecurityExam.Helpers;
 using ApiSecurityExam.Models;
 using ApiSecurityExam.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ApiSecurityExam.Controllers
@@ -96,12 +97,13 @@ namespace ApiSecurityExam.Controllers
         public async Task<ActionResult> CreateUsuario(Usuarios model)
         {
             await this.repo.CreateUsuarioAsync(model.IdUsuario, model.Nombre, model.Apellido,
-                model.Pass, model.Foto);
+                model.Email, model.Pass, model.Foto);
             return Ok();
         }
 
         [HttpPost]
         [Route("[action]")]
+        [AllowAnonymous]
         public async Task<ActionResult> Login(LoginModel model)
         {
             Usuarios usuario = await this.repo.LoginUsuario(model.Nombre, model.Password);
@@ -110,6 +112,7 @@ namespace ApiSecurityExam.Controllers
 
         [HttpPost]
         [Route("[action]")]
+        [Authorize]
         public async Task<ActionResult> CreatePedido(int idUsuario, List<int> idLibros)
         {
             await this.repo.CreatePedidoAsync(idUsuario, idLibros);
@@ -117,13 +120,15 @@ namespace ApiSecurityExam.Controllers
         }
         [HttpGet]
         [Route("[action]")]
-        public async Task<ActionResult<UserModel>> PerfilUsuario()
+        [Authorize]
+        public ActionResult<UserModel> PerfilUsuario()
         {
             UserModel model = this.helper.GetUsuario();
             return model;
         }
 
         [HttpGet("PerfilBlob")]
+        [Authorize]
         public async Task<ActionResult<UserModel>> PerfilUsuarioBlob()
         {
 
@@ -132,6 +137,7 @@ namespace ApiSecurityExam.Controllers
             return userblob;
         }
         [HttpGet("LibrosBlob")]
+        [Authorize]
         public async Task<ActionResult<List<Libros>>> GetLibrosBlob()
         {
             return await this.repo.GetLibrosBlobAsync();

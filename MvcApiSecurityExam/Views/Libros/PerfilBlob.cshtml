@@ -1,0 +1,24 @@
+@model MvcApiSecurityExam.Models.UserModel
+@{
+    ViewData["Title"] = "Perfil Blob";
+}
+
+<div class="card shadow-sm">
+    <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
+        <h4 class="mb-0">Perfil con imágenes Blob</h4>
+        <a asp-action="Perfil" class="btn btn-light btn-sm">Ver perfil normal</a>
+    </div>
+    <div class="card-body row g-4">
+        <div class="col-md-3">
+            <img src="@Model.Foto" class="img-fluid rounded-circle shadow-sm" alt="@Model.Nombre" />
+        </div>
+        <div class="col-md-9">
+            <dl class="row mb-0">
+                <dt class="col-sm-3">Id</dt><dd class="col-sm-9">@Model.IdUsuario</dd>
+                <dt class="col-sm-3">Nombre</dt><dd class="col-sm-9">@Model.Nombre</dd>
+                <dt class="col-sm-3">Apellido</dt><dd class="col-sm-9">@Model.Apellido</dd>
+                <dt class="col-sm-3">Email</dt><dd class="col-sm-9">@Model.Email</dd>
+            </dl>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,17 @@
+@model MvcApiSecurityExam.Models.Generos
+@{
+    ViewData["Title"] = "Detalle género";
+}
+
+<div class="card shadow-sm">
+    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+        <h4 class="mb-0">@Model.Nombre</h4>
+        <a asp-action="Generos" class="btn btn-light btn-sm">Volver</a>
+    </div>
+    <div class="card-body">
+        <dl class="row mb-0">
+            <dt class="col-sm-3">Id</dt><dd class="col-sm-9">@Model.IdGenero</dd>
+            <dt class="col-sm-3">Nombre</dt><dd class="col-sm-9">@Model.Nombre</dd>
+        </dl>
+    </div>
+</div>

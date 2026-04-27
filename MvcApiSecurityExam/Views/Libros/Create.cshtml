@@ -1,0 +1,61 @@
+@model MvcApiSecurityExam.Models.Libros
+@{
+    ViewData["Title"] = "Nuevo libro";
+}
+
+<div class="card shadow-sm">
+    <div class="card-header bg-success text-white">
+        <h4 class="mb-0">Crear libro</h4>
+    </div>
+    <div class="card-body">
+        <form asp-action="Create" method="post">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+            <div class="row g-3">
+                <div class="col-md-2">
+                    <label asp-for="IdLibro" class="form-label"></label>
+                    <input asp-for="IdLibro" class="form-control" />
+                    <span asp-validation-for="IdLibro" class="text-danger"></span>
+                </div>
+                <div class="col-md-5">
+                    <label asp-for="Titulo" class="form-label"></label>
+                    <input asp-for="Titulo" class="form-control" />
+                    <span asp-validation-for="Titulo" class="text-danger"></span>
+                </div>
+                <div class="col-md-5">
+                    <label asp-for="Autor" class="form-label"></label>
+                    <input asp-for="Autor" class="form-control" />
+                    <span asp-validation-for="Autor" class="text-danger"></span>
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="Editorial" class="form-label"></label>
+                    <input asp-for="Editorial" class="form-control" />
+                    <span asp-validation-for="Editorial" class="text-danger"></span>
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="Portada" class="form-label"></label>
+                    <input asp-for="Portada" class="form-control" />
+                    <span asp-validation-for="Portada" class="text-danger"></span>
+                </div>
+                <div class="col-md-2">
+                    <label asp-for="Precio" class="form-label"></label>
+                    <input asp-for="Precio" class="form-control" />
+                    <span asp-validation-for="Precio" class="text-danger"></span>
+                </div>
+                <div class="col-md-2">
+                    <label asp-for="IdGenero" class="form-label"></label>
+                    <select asp-for="IdGenero" class="form-select" asp-items="ViewBag.Generos"></select>
+                    <span asp-validation-for="IdGenero" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="mt-4 d-flex gap-2">
+                <button type="submit" class="btn btn-success">Guardar</button>
+                <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

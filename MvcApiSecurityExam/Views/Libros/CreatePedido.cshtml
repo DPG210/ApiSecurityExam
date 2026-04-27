@@ -1,0 +1,53 @@
+@model MvcApiSecurityExam.Models.PedidoRequestModel
+@{
+    ViewData["Title"] = "Crear pedido";
+    var usuarios = ViewBag.Usuarios as List<MvcApiSecurityExam.Models.Usuarios> ?? new List<MvcApiSecurityExam.Models.Usuarios>();
+    var libros = ViewBag.Libros as List<MvcApiSecurityExam.Models.Libros> ?? new List<MvcApiSecurityExam.Models.Libros>();
+}
+
+<div class="card shadow-sm">
+    <div class="card-header bg-primary text-white">
+        <h4 class="mb-0">Nuevo pedido</h4>
+    </div>
+    <div class="card-body">
+        <form asp-action="CreatePedido" method="post">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label asp-for="IdUsuario" class="form-label">Usuario</label>
+                    <select asp-for="IdUsuario" class="form-select">
+                        <option value="">Selecciona un usuario</option>
+                        @foreach (var usuario in usuarios)
+                        {
+                            <option value="@usuario.IdUsuario">@usuario.Nombre @usuario.Apellido</option>
+                        }
+                    </select>
+                    <span asp-validation-for="IdUsuario" class="text-danger"></span>
+                </div>
+                <div class="col-md-8">
+                    <label class="form-label">Libros</label>
+                    <div class="border rounded p-3 bg-white" style="max-height: 350px; overflow:auto;">
+                        @foreach (var libro in libros)
+                        {
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="IdLibros" value="@libro.IdLibro" id="libro_@libro.IdLibro" />
+                                <label class="form-check-label" for="libro_@libro.IdLibro">
+                                    @libro.Titulo - @libro.Precio.ToString("N0")
+                                </label>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="mt-4 d-flex gap-2">
+                <button type="submit" class="btn btn-primary">Crear pedido</button>
+                <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

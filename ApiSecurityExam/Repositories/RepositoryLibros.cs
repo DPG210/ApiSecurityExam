@@ -7,9 +7,10 @@ namespace ApiSecurityExam.Repositories
 {
     public class RepositoryLibros
     {
-        private LibrosContext context;
-        private ServiceStorageBlobs service;
-        public RepositoryLibros(LibrosContext context)
+        private readonly LibrosContext context;
+        private readonly ServiceStorageBlobs service;
+
+        public RepositoryLibros(LibrosContext context, ServiceStorageBlobs service)
         {
             this.service = service;
             this.context = context;
@@ -45,11 +46,9 @@ namespace ApiSecurityExam.Repositories
         public async Task UpdateLibroAsync(int idLibro, string titulo, string autor,
             string editorial, string portada, int precio, int idGenero)
         {
-
             Libros libro = await this.context.Libros.FindAsync(idLibro);
-            if (libro == null)
+            if (libro != null)
             {
-
                 libro.IdLibro = idLibro;
                 libro.Titulo = titulo;
                 libro.Autor = autor;
@@ -58,15 +57,17 @@ namespace ApiSecurityExam.Repositories
                 libro.Precio = precio;
                 libro.IdGenero = idGenero;
 
+                await this.context.SaveChangesAsync();
             }
-
-            await this.context.SaveChangesAsync();
         }
         public async Task DeleteLibroAsync(int idLibro)
         {
             Libros libro = await this.FindLibroAsync(idLibro);
-            this.context.Libros.Remove(libro);
-            await this.context.SaveChangesAsync();
+            if (libro != null)
+            {
+                this.context.Libros.Remove(libro);
+                await this.context.SaveChangesAsync();
+            }
         }
         public async Task<List<Generos>> GetGenerosAsync()
         {
@@ -93,13 +94,14 @@ namespace ApiSecurityExam.Repositories
 
         }
 
-        public async Task CreateUsuarioAsync(int idUsuario, string nombre, string apellido, string pass, string foto)
+        public async Task CreateUsuarioAsync(int idUsuario, string nombre, string apellido, string email, string pass, string foto)
         {
             Usuarios usuario = new Usuarios
             {
                 IdUsuario = await this.GetMaxIdUsuario(),
                 Nombre = nombre,
                 Apellido = apellido,
+                Email = email,
                 Pass = pass,
                 Foto = foto
             };
@@ -164,19 +166,18 @@ namespace ApiSecurityExam.Repositories
         public async Task<List<Libros>> GetLibrosBlobAsync()
         {
             List<Libros> libros = await this.context.Libros.ToListAsync();
-            string containerUrl = this.service.GetContainerUrl("libros");
 
             foreach (Libros libro in libros)
             {
-                if (!libro.Portada.StartsWith("http"))
+                if (!string.IsNullOrWhiteSpace(libro.Portada) && !libro.Portada.StartsWith("http"))
                 {
                     string imagePath = libro.Portada;
                     if (!imagePath.StartsWith("PORTADAS/"))
                     {
-                        imagePath = "PORTADAS/" + imagePath;
+                        imagePath = $"PORTADAS/{imagePath}";
                     }
 
-                    libro.Portada = containerUrl + "/" + imagePath;
+                    libro.Portada = this.service.GetBlobUrl("libros", imagePath);
                 }
             }
 
@@ -198,17 +199,15 @@ namespace ApiSecurityExam.Repositories
 
             if (!string.IsNullOrEmpty(usuario.Foto))
             {
-                string containerUrl = this.service.GetContainerUrl("cubos");
-
                 if (!usuario.Foto.StartsWith("http"))
                 {
                     string imagePath = usuario.Foto;
                     if (!imagePath.StartsWith("USUARIOS/"))
                     {
-                        imagePath = "USUARIOS/" + imagePath;
+                        imagePath = $"USUARIOS/{imagePath}";
                     }
 
-                    model.Foto = containerUrl + "/" + imagePath;
+                    model.Foto = this.service.GetBlobUrl("libros", imagePath);
                 }
                 else
                 {
