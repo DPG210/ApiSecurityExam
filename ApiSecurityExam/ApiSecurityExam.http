@@ -1,0 +1,6 @@
+@ApiSecurityExam_HostAddress = http://localhost:5195
+
+GET {{ApiSecurityExam_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
