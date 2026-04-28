@@ -156,6 +156,7 @@ namespace ApiSecurityExam.Controllers
         public async Task<ActionResult<List<Libros>>> GetLibrosBlobSinSeguridad()
         {
             return await this.repo.GetLibrosBlobAsyncSinSeguridad();
+
         }
     }
 }
