@@ -142,5 +142,20 @@ namespace ApiSecurityExam.Controllers
         {
             return await this.repo.GetLibrosBlobAsync();
         }
+        [HttpGet("PerfilBlobSinSeguridad")]
+        [Authorize]
+        public async Task<ActionResult<UserModel>> PerfilUsuarioBlobSinSeguridad()
+        {
+
+            UserModel model = this.helper.GetUsuario();
+            var userblob = await this.repo.PerfilUsuarioBlobAsyncSinSeguridad(model.IdUsuario);
+            return userblob;
+        }
+        [HttpGet("LibrosBlobSinSeguridad")]
+        [Authorize]
+        public async Task<ActionResult<List<Libros>>> GetLibrosBlobSinSeguridad()
+        {
+            return await this.repo.GetLibrosBlobAsyncSinSeguridad();
+        }
     }
 }

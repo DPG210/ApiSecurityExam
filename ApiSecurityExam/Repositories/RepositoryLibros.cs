@@ -1,7 +1,7 @@
 ﻿using ApiSecurityExam.Data;
 using ApiSecurityExam.Models;
+using ApiSecurityExam.Services;
 using Microsoft.EntityFrameworkCore;
-using MvcCoreAzureStorage.Services;
 
 namespace ApiSecurityExam.Repositories
 {
@@ -208,6 +208,61 @@ namespace ApiSecurityExam.Repositories
                     }
 
                     model.Foto = this.service.GetBlobUrl("libros", imagePath);
+                }
+                else
+                {
+                    model.Foto = usuario.Foto;
+                }
+            }
+
+            return model;
+        }
+        public async Task<List<Libros>> GetLibrosBlobAsyncSinSeguridad()
+        {
+            List<Libros> libros = await this.context.Libros.ToListAsync();
+            string containerUrl = this.service.GetContainerUrl("libros");
+            foreach (Libros libro in libros)
+            {
+                if (!string.IsNullOrWhiteSpace(libro.Portada) && !libro.Portada.StartsWith("http"))
+                {
+                    string imagePath = libro.Portada;
+                    if (!imagePath.StartsWith("PORTADAS/"))
+                    {
+                        imagePath = $"PORTADAS/{imagePath}";
+                    }
+
+                    libro.Portada = containerUrl + "/" + imagePath;
+                }
+            }
+
+            return libros;
+        }
+
+        public async Task<UserModel> PerfilUsuarioBlobAsyncSinSeguridad(int id)
+        {
+            Usuarios usuario = await this.context.Usuarios.Where(x => x.IdUsuario == id).FirstOrDefaultAsync();
+
+            UserModel model = new UserModel
+            {
+                IdUsuario = usuario.IdUsuario,
+                Nombre = usuario.Nombre,
+                Email = usuario.Email,
+                Foto = usuario.Foto,
+                Apellido = usuario.Apellido,
+            };
+
+            if (!string.IsNullOrEmpty(usuario.Foto))
+            {
+                string containerUrl = this.service.GetContainerUrl("libros");
+                if (!usuario.Foto.StartsWith("http"))
+                {
+                    string imagePath = usuario.Foto;
+                    if (!imagePath.StartsWith("USUARIOS/"))
+                    {
+                        imagePath = $"USUARIOS/{imagePath}";
+                    }
+
+                    model.Foto = containerUrl + "/" + imagePath;
                 }
                 else
                 {

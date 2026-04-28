@@ -1,9 +1,9 @@
-﻿using Azure.Storage.Blobs;
+﻿using ApiSecurityExam.Models;
+using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Azure.Storage.Sas;
-using MvcCoreAzureStorage.Models;
 
-namespace MvcCoreAzureStorage.Services
+namespace ApiSecurityExam.Services
 {
     public class ServiceStorageBlobs
     {

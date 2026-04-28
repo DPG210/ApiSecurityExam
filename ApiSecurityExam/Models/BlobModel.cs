@@ -1,4 +1,4 @@
-﻿namespace MvcCoreAzureStorage.Models
+﻿namespace ApiSecurityExam.Models
 {
     public class BlobModel
     {

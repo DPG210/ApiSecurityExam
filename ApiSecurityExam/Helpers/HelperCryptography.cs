@@ -1,4 +1,5 @@
-﻿using System.Security.Cryptography;
+﻿using Azure.Security.KeyVault.Secrets;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace ApiOAuthEmpleados.Helpers
@@ -6,10 +7,17 @@ namespace ApiOAuthEmpleados.Helpers
     public static class HelperCryptography
     {
         private static string KeyCifrado;
+        private static SecretClient secretClient;
 
-        public static void Initialize(IConfiguration configuration)
+        //public static void Initialize(IConfiguration configuration)
+        //{
+        //    KeyCifrado = configuration.GetValue<string>("Cypher:Key");
+        //}
+        public static void Initialize(IConfiguration configuration, SecretClient client)
         {
-            KeyCifrado = configuration.GetValue<string>("Cypher:Key");
+            secretClient = client;
+            KeyVaultSecret secretCypher = secretClient.GetSecret("CypherKey");
+            KeyCifrado = secretCypher.Value;
         }
 
         public static string CifrarString(string data)
